@@ -1,0 +1,28 @@
+$LIGHTCOLOR: white;
+
+.FileUploaderZone {
+    width: 300px;
+    height: 350px;
+    background-color: rgba(0, 0, 0, 0.87);
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    color: white;
+
+    label {
+        font-size: larger;
+        padding: 20px 0 0 20px;
+    }
+}
+
+.DARK {
+    background-color: rgba(0, 0, 0, 0.87);
+}
+
+.LIGHT {
+    background-color: white;
+}
+
+.invalid {
+    border: 10px dashed royalblue !important;
+}

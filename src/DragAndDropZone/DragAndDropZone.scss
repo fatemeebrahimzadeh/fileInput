@@ -1,0 +1,15 @@
+.DragAndDropZone {
+    background-color: rgb(89, 0, 255);
+    height: 30%;
+    width: 80%;
+    border-radius: 10px;
+    margin: auto;
+    transition: all 0.1s linear;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+        height: 40%;
+    }
+}
