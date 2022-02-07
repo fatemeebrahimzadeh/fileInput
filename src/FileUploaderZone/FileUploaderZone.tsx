@@ -91,7 +91,6 @@ class FileUploaderZone extends Component<IProps, IState> {
                 }
             }
             
-            this.state.hasError && alert("some error occurred")
             this.setFormData(formData)
             event.dataTransfer.clearData()
         }
@@ -129,7 +128,6 @@ class FileUploaderZone extends Component<IProps, IState> {
             }
         }
 
-        this.state.hasError && alert("some error occurred")
         this.setFormData(formData)
     }
 
