@@ -25,6 +25,7 @@ class SubmitButton extends Component<IProps, IState> {
                     const formData = new FormData()
                     this.props.setFormData(formData)
                     console.log('Success:', result);
+                    
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -37,6 +38,7 @@ class SubmitButton extends Component<IProps, IState> {
     render(): React.ReactNode {
         return (
             <button
+                className="SubmitButton"
                 disabled={this.props.disabled}
                 onClick={this.submitHandler}
             >

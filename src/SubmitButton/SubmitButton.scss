@@ -1,0 +1,32 @@
+.SubmitButton {
+    margin: 10px;
+    padding: 5px;
+    min-width: fit-content;
+    position: relative;
+    border: 1px solid #ffffff5d;
+    outline: none;
+    background: none;
+    height: 40px;
+    border-radius: 2px;
+    color: #bb86fc;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    transition: all 0.1s linear;
+
+    &:hover {
+        background-color: #707070;
+    }
+
+    &:active {
+        transform: scale(0.989);
+    }
+
+    &:disabled {
+        color: #707070;
+        pointer-events: none;
+    }
+}

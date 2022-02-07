@@ -1,23 +1,17 @@
 import React, { Component } from "react";
+import { checkValidation, IValidationRules } from "../FileUploaderZone/FileUploaderZone"
 import "./FileInput.scss"
-
-type IRuntime = 'onEvent' | 'onChange' | 'onBlur'
-type IValidationNames = 'REQUIRED' | 'FORMAT' | 'SIZE' | 'CUSTOM'
-type IValidationMassage = { type: IValidationNames, id: string, index: number, message: string }
-
-interface IInputValidationRules {
-    runtime?: IRuntime
-    name: IValidationNames
-    handler?: (val: File) => IValidationMassage | undefined
-    formatAccept?: string
-}
 
 interface IProps {
     id: string
     setFormData(files: FormData): void
+    setError(hasError: boolean): void
     disabled?: boolean
     onFocus?(): void
     onBlur?(): void
+    validationRules?: IValidationRules[]
+    formatAccept?: string
+    size?: number
 }
 
 interface IState {
@@ -32,103 +26,42 @@ class FileInput extends Component<IProps, IState>{
         this.props.onFocus && this.props.onFocus()
     }
 
-    onBlur = () => {
+    onBlur = (event: React.ChangeEvent<HTMLInputElement>) => {
         this.props.onBlur && this.props.onBlur()
     }
 
-    onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+        this.props.setError(false)
         const formData = new FormData()
 
-        if (!!e.target.files?.length) {
-
-            for (let index = 0; index < e.target.files.length; index++) {
-                formData.append('file', e.target.files[index], e.target.files[index].name)
+        if (!!event.target.files?.length) {
+            for (let index = 0; index < event.target.files.length; index++) {
+                if (!!checkValidation(this.props.id,
+                    event.target.files[index],
+                    index,
+                    this.props.validationRules,
+                    this.props.formatAccept,
+                    this.props.size
+                ).length) {
+                    console.log("onChangeHandler", checkValidation(this.props.id,
+                        event.target.files[index],
+                        index,
+                        this.props.validationRules,
+                        this.props.formatAccept,
+                        this.props.size
+                    ))
+                    this.props.setError(true)
+                } else {
+                    formData.append('file', event.target.files[index], event.target.files[index].name)
+                }
             }
         }
 
-        // const validationResult = checkInputValidate(value, this.props.validation, 'onChange', this.props.type)
-        // this.setState({
-        //     validationMessages: validationResult
-        // })
         this.props.setFormData(formData)
     }
 
     get input() {
         return this.reference.current
-    }
-
-    fileIsValid = (fileName: string, formatAccept: string) => {
-        let fileExtention = fileName.split(".").pop();
-        fileExtention = fileExtention!.toLowerCase();
-        for (const extention of formatAccept.split(",")) {
-            if (extention === `.${fileExtention}`) {
-                return true
-            }
-        }
-        return false
-    }
-
-    checkInputValidate = (
-        file: File,
-        index: number,
-        validationRules?: IInputValidationRules[],
-        runtime?: IRuntime
-    ) => {
-        // let validationMessages: string[] = []
-        let validationMassage: IValidationMassage[] = []
-
-        if (validationRules && validationRules.length) {
-
-            for (const validation of validationRules) {
-
-                switch (validation.name) {
-
-                    case 'REQUIRED':
-                        if (file != null) {
-                            validationMassage.push({ type: 'FORMAT', id: this.props.id, index, message: 'This Field is Required' })
-                        }
-                        break
-
-                    case 'FORMAT':
-                        if (file != null) {
-                            var fileName = file.name;
-                            if (validation.formatAccept) {
-                                if (this.fileIsValid(fileName, validation.formatAccept) == false) {
-                                    validationMassage.push({ type: 'FORMAT', id: this.props.id, index, message: `Enter in the format: ${validation.formatAccept}` })
-                                }
-                            }
-                        }
-                        break
-
-                    case 'SIZE':
-                        if (file != null) {
-                            var size = file.size;
-                            // should to change this 
-                            if ((size != null) && ((size / (1024 * 1024)) > 3)) {
-                                validationMassage.push({ type: 'SIZE', id: this.props.id, index, message: "This file is too large to upload." })
-                            }
-                        }
-                        break
-
-                    case 'CUSTOM':
-                        if (validation.runtime) {
-                            if (runtime === validation.runtime) {
-                                const customValidationMessage = validation.handler!(file)
-                                customValidationMessage && validationMassage.push(customValidationMessage)
-                            }
-                        } else {
-                            const customValidationMessage = validation.handler!(file)
-                            customValidationMessage && validationMassage.push(customValidationMessage)
-                        }
-                        break
-                }
-
-            }
-
-        }
-
-        return validationMassage
-
     }
 
     render() {
@@ -141,8 +74,8 @@ class FileInput extends Component<IProps, IState>{
                 ref={this.reference}
                 disabled={this.props.disabled}
                 onChange={this.onChangeHandler}
-                onFocus={() => this.onFocus()}
-                onBlur={() => this.onBlur()}
+                onFocus={this.onFocus}
+                onBlur={this.onBlur}
                 multiple
             />
         )
