@@ -3,12 +3,7 @@ import { checkValidation, IValidationRules } from "../FileUploaderZone/FileUploa
 import "./DragAndDropZone.scss"
 
 interface IProps {
-    id: string
-    setFormData(files: FormData): void
-    setError(hasError: boolean): void
-    validationRules?: IValidationRules[]
-    formatAccept?: string
-    size?: number
+    handleDrop(event: DragEvent): void
 }
 
 interface IState { }
@@ -33,34 +28,9 @@ class DragAndDropZone extends Component<IProps, IState> {
     }
 
     handleDrop = (event: DragEvent) => {
-        this.props.setError(false)
         event.preventDefault()
         event.stopPropagation()
-        if (event?.dataTransfer?.files && event.dataTransfer.files.length > 0) {
-            const formData = new FormData()
-            for (let index = 0; index < event.dataTransfer.files.length; index++) {
-                if (!!checkValidation(this.props.id,
-                    event.dataTransfer.files[index],
-                    index,
-                    this.props.validationRules,
-                    this.props.formatAccept,
-                    this.props.size
-                ).length) {
-                    console.log("handleDrop", checkValidation(this.props.id,
-                        event.dataTransfer.files[index],
-                        index,
-                        this.props.validationRules,
-                        this.props.formatAccept,
-                        this.props.size
-                    ))
-                    this.props.setError(true)
-                } else {
-                    formData.append('file', event.dataTransfer.files[index], event.dataTransfer.files[index].name)
-                }
-            }
-            this.props.setFormData(formData)
-            event.dataTransfer.clearData()
-        }
+        this.props.handleDrop(event)
     }
 
     componentDidMount() {

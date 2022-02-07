@@ -5,7 +5,7 @@ function App() {
   return (
     <div className="App">
       <FileUploaderZone
-        URL="http://localhost:6000/upload"
+        URL="http://localhost:8080/upload"
         method='POST'
         formatAccept='.png,.jpeg,.jpg'
         id="My-FileInput"
